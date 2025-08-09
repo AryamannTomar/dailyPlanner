@@ -7,7 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { CalendarDays, ChevronLeft, ChevronRight } from "lucide-react"
+import { CalendarDays, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
 import DayCard from "@/components/day-card"
 import ProgressCircle from "@/components/progress-circle"
 import CalendarHeatmap from "@/components/calendar-heatmap"
@@ -26,6 +26,7 @@ export default function Page() {
   // Local task state keyed by ISO yyyy-mm-dd
   const [tasksByDate, setTasksByDate] = useState<TasksByDate>({})
   const [categoriesByDate, setCategoriesByDate] = useState<CategoriesByDate>({})
+  const [isLoading, setIsLoading] = useState<boolean>(true)
 
   // Month/Year filter
   const [mode, setMode] = useState<FilterMode>("tasks")
@@ -34,6 +35,7 @@ export default function Page() {
   useEffect(() => {
     let cancelled = false
     async function load() {
+      setIsLoading(true)
       const tasksEntries = await Promise.all(
         weekDates.map(async (d) => {
           const iso = formatISODate(d)
@@ -53,6 +55,7 @@ export default function Page() {
       if (!cancelled) {
         setTasksByDate(Object.fromEntries(tasksEntries))
         setCategoriesByDate(Object.fromEntries(categoriesEntries))
+        setIsLoading(false)
       }
     }
     load()
@@ -159,6 +162,14 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
+      {isLoading && (
+        <div className="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm flex items-center justify-center">
+          <div className="flex items-center gap-3 rounded-lg border bg-background px-4 py-3 shadow-sm">
+            <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+            <span className="text-sm text-muted-foreground">Loading data…</span>
+          </div>
+        </div>
+      )}
       <header className="sticky top-0 z-10 border-b bg-background/70 backdrop-blur supports-[backdrop-filter]:bg-background/60">
         <div className="mx-auto max-w-6xl px-4 py-3 flex items-center gap-3">
           <div className="flex items-center gap-2">

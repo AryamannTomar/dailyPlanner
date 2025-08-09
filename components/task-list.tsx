@@ -21,6 +21,7 @@ export default function TaskList({
   onDelete: (taskId: string) => void
 }) {
   const [editingId, setEditingId] = useState<string | null>(null)
+  const [editingValue, setEditingValue] = useState<string>("")
 
   if (!tasks || tasks.length === 0) {
     return (
@@ -91,16 +92,46 @@ export default function TaskList({
                             aria-label="Actual end time"
                             type="time"
                             step={1}
-                            value={end || ""}
-                            onChange={(e) => onUpdateEndTime(task.id, e.target.value)}
-                            onBlur={() => setEditingId(null)}
-                            className="h-7 w-[120px] text-xs"
+                            value={editingValue}
+                            onChange={(e) => setEditingValue(e.target.value)}
+                            onBlur={() => {
+                              if (editingValue) {
+                                onUpdateEndTime(task.id, editingValue)
+                              }
+                              setEditingId(null)
+                            }}
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault()
+                                if (editingValue) {
+                                  onUpdateEndTime(task.id, editingValue)
+                                }
+                                setEditingId(null)
+                              } else if (e.key === "Escape") {
+                                e.preventDefault()
+                                setEditingId(null)
+                              }
+                            }}
+                            onClick={(e) => {
+                              e.stopPropagation()
+                            }}
+                            className="h-7 w-[120px] text-xs no-native-time-picker"
                             autoFocus
                           />
                         ) : (
                           <button
                             type="button"
-                            onClick={() => setEditingId(task.id)}
+                            onMouseDown={(e) => {
+                              // Prevent label default toggle on press
+                              e.preventDefault()
+                            }}
+                            onClick={(e) => {
+                              // Prevent label click from toggling the checkbox
+                              e.preventDefault()
+                              e.stopPropagation()
+                              setEditingId(task.id)
+                              setEditingValue(end || "")
+                            }}
                             className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-300"
                             aria-label="Edit end time"
                           >

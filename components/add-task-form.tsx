@@ -63,20 +63,17 @@ export default function AddTaskForm({
     return v.replace(/[^0-9]/g, "").slice(0, 2)
   }
   function clampHour(v: string) {
+    // Do not clamp while typing; just return cleaned string
     if (!v) return v
     let n = Number.parseInt(v, 10)
     if (isNaN(n)) return ""
-    if (n < 1) n = 1
-    if (n > 12) n = 12
-    return String(n).padStart(2, "0")
+    return String(n).slice(0, 2)
   }
   function clampMinute(v: string) {
     if (!v) return v
     let n = Number.parseInt(v, 10)
     if (isNaN(n)) return ""
-    if (n < 0) n = 0
-    if (n > 59) n = 59
-    return String(n).padStart(2, "0")
+    return String(n).slice(0, 2)
   }
 
   return (
@@ -85,8 +82,22 @@ export default function AddTaskForm({
       onSubmit={(e) => {
         e.preventDefault()
         if (!description.trim()) return
-        const startTime = to24h(clampHour(sHour) || "12", clampMinute(sMinute) || "00", sPeriod)
-        const approxEndTime = to24h(clampHour(eHour) || "12", clampMinute(eMinute) || "00", ePeriod)
+         // Validate once on submit for smoother typing
+         const sH = Number.parseInt(sHour || "12", 10)
+         const sM = Number.parseInt(sMinute || "0", 10)
+         const eH = Number.parseInt(eHour || "12", 10)
+         const eM = Number.parseInt(eMinute || "0", 10)
+         const invalid =
+           isNaN(sH) || sH < 1 || sH > 12 ||
+           isNaN(sM) || sM < 0 || sM > 59 ||
+           isNaN(eH) || eH < 1 || eH > 12 ||
+           isNaN(eM) || eM < 0 || eM > 59
+         if (invalid) {
+           alert("Please enter a valid time (hh between 1-12, mm between 00-59).")
+           return
+         }
+         const startTime = to24h(String(sH), String(sM), sPeriod)
+         const approxEndTime = to24h(String(eH), String(eM), ePeriod)
         onSave({
           startTime,
           approxEndTime,
@@ -111,25 +122,23 @@ export default function AddTaskForm({
           <div className="flex flex-wrap items-center gap-1 rounded-md border bg-white px-2 py-1.5">
             <Clock className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
             <div className="flex items-center gap-1">
-              <Input
+               <Input
                 id="start-hour"
                 type="text"
                 inputMode="numeric"
                 placeholder="hh"
                 value={sHour}
-                onChange={(e) => setSHour(onlyDigits2(e.target.value))}
-                onBlur={() => setSHour((v) => clampHour(v))}
+                 onChange={(e) => setSHour(onlyDigits2(e.target.value))}
                 className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
               />
               <span className="select-none text-xs text-neutral-500 px-0.5">:</span>
-              <Input
+               <Input
                 id="start-minute"
                 type="text"
                 inputMode="numeric"
                 placeholder="mm"
                 value={sMinute}
-                onChange={(e) => setSMinute(onlyDigits2(e.target.value))}
-                onBlur={() => setSMinute((v) => clampMinute(v))}
+                 onChange={(e) => setSMinute(onlyDigits2(e.target.value))}
                 className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
               />
             </div>
@@ -165,25 +174,23 @@ export default function AddTaskForm({
           <div className="flex flex-wrap items-center gap-1 rounded-md border bg-white px-2 py-1.5">
             <Clock className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
             <div className="flex items-center gap-1">
-              <Input
+               <Input
                 id="end-hour"
                 type="text"
                 inputMode="numeric"
                 placeholder="hh"
                 value={eHour}
-                onChange={(e) => setEHour(onlyDigits2(e.target.value))}
-                onBlur={() => setEHour((v) => clampHour(v))}
+                 onChange={(e) => setEHour(onlyDigits2(e.target.value))}
                 className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
               />
               <span className="select-none text-xs text-neutral-500 px-0.5">:</span>
-              <Input
+               <Input
                 id="end-minute"
                 type="text"
                 inputMode="numeric"
                 placeholder="mm"
                 value={eMinute}
-                onChange={(e) => setEMinute(onlyDigits2(e.target.value))}
-                onBlur={() => setEMinute((v) => clampMinute(v))}
+                 onChange={(e) => setEMinute(onlyDigits2(e.target.value))}
                 className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
               />
             </div>
