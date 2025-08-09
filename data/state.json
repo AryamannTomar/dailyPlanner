@@ -12,5 +12,12 @@
     "2025-08-04": [],
     "2025-08-05": []
   },
-  "categoriesByDate": {}
+  "categoriesByDate": {
+    "2025-08-09": {
+      "water": false,
+      "meat": false,
+      "sleep": true,
+      "gym": false
+    }
+  }
 }
