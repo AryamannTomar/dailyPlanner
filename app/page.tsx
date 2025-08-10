@@ -13,6 +13,7 @@ import ProgressCircle from "@/components/progress-circle"
 import CalendarHeatmap from "@/components/calendar-heatmap"
 import YearStrip from "@/components/year-strip"
 import ThemeToggle from "@/components/theme-toggle"
+import FlipClock from "@/components/flip-clock"
 
 export default function Page() {
   // Selected date controls which week/month/year to show
@@ -203,6 +204,7 @@ export default function Page() {
               }}
               className="w-[9.5rem]"
             />
+            <FlipClock />
             <ThemeToggle />
           </div>
         </div>
