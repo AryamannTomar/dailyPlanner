@@ -13,7 +13,37 @@
     ],
     "2025-08-04": [],
     "2025-08-05": [],
-    "2025-08-10": []
+    "2025-08-10": [],
+    "2025-08-12": [
+      {
+        "id": "1754978030722-r0p3zuopv2t",
+        "startTime": "11:23",
+        "approxEndTime": "17:00",
+        "description": "SharePoint configure on n8n",
+        "completed": false
+      },
+      {
+        "id": "1754978102149-alm70in1xbu",
+        "startTime": "11:23",
+        "approxEndTime": "17:00",
+        "description": "MailAutomation - Fix FrontEnd Edit - Paste Option",
+        "completed": false
+      },
+      {
+        "id": "1754978145474-jwzjexwcht",
+        "startTime": "11:25",
+        "approxEndTime": "17:00",
+        "description": "GEPCampusGrid - BulkUpload + FileUpload",
+        "completed": false
+      },
+      {
+        "id": "1754978191983-6g0e9y3naw",
+        "startTime": "11:26",
+        "approxEndTime": "15:00",
+        "description": "NextJs Training x2 - 2hrs each",
+        "completed": false
+      }
+    ]
   },
   "categoriesByDate": {
     "2025-08-09": {
