@@ -5,8 +5,8 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import type { Task } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import { computeDeltaFromApprox, formatDurationHuman, formatTime12h } from "@/lib/time-utils"
-import { Pencil, Trash2 } from "lucide-react"
+import { computeDeltaFromApprox, formatDurationHuman, formatTime12h, getCompletionStatus } from "@/lib/time-utils"
+import { Pencil, Trash2, Clock, CheckCircle, AlertCircle, Timer } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 export default function TaskList({
@@ -41,8 +41,10 @@ export default function TaskList({
         const startLabel = formatTime12h(start)
         const approxLabel = formatTime12h(approx)
         const endLabel = end ? formatTime12h(end) : ""
-        const deltaSeconds = end ? computeDeltaFromApprox(approx, end) : undefined
-        const deltaHuman = typeof deltaSeconds === "number" ? formatDurationHuman(Math.abs(deltaSeconds)) : ""
+        
+        // Get completion status with proper icons and colors
+        const completionStatus = getCompletionStatus(approx, end || "")
+        const deltaHuman = completionStatus.delta ? formatDurationHuman(completionStatus.delta) : ""
 
         const isEditing = editingId === task.id
 
@@ -123,7 +125,7 @@ export default function TaskList({
                               setEditingId(task.id)
                               setEditingValue(end || "")
                             }}
-                            className="flex items-center gap-1 text-xs text-foreground hover:text-foreground/80 transition-colors"
+                            className="flex items-center gap-1 text-xs text-foreground hover:text-foreground/80 transition-colors cursor-pointer"
                           >
                             <span className="tabular-nums">{endLabel || "—"}</span>
                             <Pencil className="h-3 w-3" />
@@ -131,24 +133,31 @@ export default function TaskList({
                         )}
                       </div>
 
-                      {/* Delta indicator */}
-                      {deltaSeconds !== undefined && (
+                      {/* Completion status indicator with proper icons */}
+                      {completionStatus.status !== 'pending' && (
                         <div className="flex items-center gap-1">
-                          <span
-                            className={cn(
-                              "text-xs font-medium",
-                              deltaSeconds > 0 ? "text-orange-600 dark:text-orange-400" : "text-green-600 dark:text-green-400",
-                            )}
-                          >
-                            {deltaSeconds > 0 ? "▲" : "▼"} {deltaHuman}
+                          {completionStatus.status === 'late' && (
+                            <AlertCircle className={cn("h-3 w-3", completionStatus.color)} />
+                          )}
+                          {completionStatus.status === 'early' && (
+                            <CheckCircle className={cn("h-3 w-3", completionStatus.color)} />
+                          )}
+                          {completionStatus.status === 'on-time' && (
+                            <Timer className={cn("h-3 w-3", completionStatus.color)} />
+                          )}
+                          <span className={cn("text-xs font-medium", completionStatus.color)}>
+                            {completionStatus.status === 'late' && `Late ${deltaHuman}`}
+                            {completionStatus.status === 'early' && `Early ${deltaHuman}`}
+                            {completionStatus.status === 'on-time' && 'On time'}
                           </span>
                         </div>
                       )}
 
                       {/* Total duration */}
                       {diffLabel && (
-                        <div className="text-xs text-muted-foreground">
-                          Total {diffLabel}
+                        <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                          <Clock className="h-3 w-3" />
+                          <span>Total {diffLabel}</span>
                         </div>
                       )}
                     </div>
@@ -162,7 +171,7 @@ export default function TaskList({
               variant="ghost"
               size="sm"
               onClick={() => onDelete(task.id)}
-              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 text-muted-foreground hover:text-destructive cursor-pointer"
             >
               <Trash2 className="h-4 w-4" />
               <span className="sr-only">Delete task</span>

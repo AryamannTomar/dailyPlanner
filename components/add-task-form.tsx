@@ -234,10 +234,10 @@ export default function AddTaskForm({
       </div>
 
       <div className="flex items-center justify-end gap-2">
-        <Button type="button" variant="outline" onClick={onCancel} className="text-foreground">
+        <Button type="button" variant="outline" onClick={onCancel} className="text-foreground cursor-pointer">
           {"Cancel"}
         </Button>
-        <Button type="submit" disabled={!description.trim()}>
+        <Button type="submit" disabled={!description.trim()} className="cursor-pointer">
           {"Save"}
         </Button>
       </div>

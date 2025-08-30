@@ -64,23 +64,39 @@ export default function DayCard({
   }
 
   useLayoutEffect(() => {
-    if (open) measure()
+    if (open) {
+      // Small delay to ensure DOM is updated
+      setTimeout(measure, 0)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
   useEffect(() => {
-    if (open) measure()
+    if (open) {
+      // Measure after tasks change or add form toggle
+      setTimeout(measure, 0)
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [tasks.length, showAdd])
+  }, [tasks.length, showAdd, tasks])
 
   useEffect(() => {
     const onResize = () => {
-      if (open) measure()
+      if (open) {
+        setTimeout(measure, 0)
+      }
     }
     window.addEventListener("resize", onResize)
     return () => window.removeEventListener("resize", onResize)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
+
+  // Measure when task content changes (like editing end times)
+  useEffect(() => {
+    if (open) {
+      const timeoutId = setTimeout(measure, 100)
+      return () => clearTimeout(timeoutId)
+    }
+  }, [open, tasks])
 
     const CategoryPill = ({
     label,
@@ -204,7 +220,7 @@ export default function DayCard({
           aria-hidden={!open}
           className="transition-[max-height,opacity] duration-300 ease-in-out overflow-hidden"
           style={{
-            maxHeight: open ? contentHeight : 0,
+            maxHeight: open ? `${contentHeight + 20}px` : 0, // Add some padding for better spacing
             opacity: open ? 1 : 0,
             contain: "layout paint style",
             willChange: "max-height",
@@ -224,7 +240,7 @@ export default function DayCard({
                     }}
                   />
                 ) : (
-                                    <Button
+                  <Button
                     variant="outline"
                     size="sm"
                     className="w-full justify-center gap-2 bg-transparent cursor-pointer"
