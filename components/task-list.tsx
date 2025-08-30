@@ -25,7 +25,7 @@ export default function TaskList({
 
   if (!tasks || tasks.length === 0) {
     return (
-      <div className="text-sm text-muted-foreground border rounded-lg p-3">
+      <div className="text-sm text-muted-foreground border rounded-lg p-3 bg-card">
         {"No tasks yet. Add your first task for this day."}
       </div>
     )
@@ -50,8 +50,8 @@ export default function TaskList({
           <li
             key={task.id}
             className={cn(
-              "group flex items-start gap-3 rounded-xl border p-3 shadow-sm transition-colors hover:border-neutral-300",
-              task.completed ? "bg-neutral-50" : "bg-white",
+              "group flex items-start gap-3 rounded-xl border p-3 shadow-sm transition-colors hover:border-border",
+              task.completed ? "bg-muted/50" : "bg-card",
             )}
           >
             <div className="w-18 shrink-0 text-xs font-medium text-muted-foreground tabular-nums">{startLabel}</div>
@@ -63,12 +63,13 @@ export default function TaskList({
                   checked={task.completed}
                   onCheckedChange={(checked) => onToggleComplete(task.id, Boolean(checked))}
                   aria-label={"Mark complete"}
+                  className="border-border bg-background data-[state=checked]:bg-primary data-[state=checked]:border-primary data-[state=checked]:text-primary-foreground"
                 />
                 <div className="flex-1 min-w-0">
                   <div
                     className={cn(
                       "text-sm leading-5",
-                      task.completed ? "line-through text-neutral-500" : "text-neutral-900",
+                      task.completed ? "line-through text-muted-foreground" : "text-foreground",
                     )}
                     title={task.description}
                   >
@@ -99,63 +100,56 @@ export default function TaskList({
                                 onUpdateEndTime(task.id, editingValue)
                               }
                               setEditingId(null)
+                              setEditingValue("")
                             }}
                             onKeyDown={(e) => {
                               if (e.key === "Enter") {
-                                e.preventDefault()
                                 if (editingValue) {
                                   onUpdateEndTime(task.id, editingValue)
                                 }
                                 setEditingId(null)
+                                setEditingValue("")
                               } else if (e.key === "Escape") {
-                                e.preventDefault()
                                 setEditingId(null)
+                                setEditingValue("")
                               }
                             }}
-                            onClick={(e) => {
-                              e.stopPropagation()
-                            }}
-                            className="h-7 w-[120px] text-xs no-native-time-picker"
+                            className="w-20 h-6 text-xs bg-background"
                             autoFocus
                           />
                         ) : (
                           <button
-                            type="button"
-                            onMouseDown={(e) => {
-                              // Prevent label default toggle on press
-                              e.preventDefault()
-                            }}
-                            onClick={(e) => {
-                              // Prevent label click from toggling the checkbox
-                              e.preventDefault()
-                              e.stopPropagation()
+                            onClick={() => {
                               setEditingId(task.id)
                               setEditingValue(end || "")
                             }}
-                            className="inline-flex items-center gap-1 rounded-md px-1 py-0.5 hover:bg-neutral-100 focus:outline-none focus:ring-2 focus:ring-neutral-300"
-                            aria-label="Edit end time"
+                            className="flex items-center gap-1 text-xs text-foreground hover:text-foreground/80 transition-colors"
                           >
-                            <span className="tabular-nums text-xs text-neutral-800">{endLabel || "—"}</span>
-                            <Pencil className="h-3.5 w-3.5 text-neutral-400 group-hover:text-neutral-500" />
+                            <span className="tabular-nums">{endLabel || "—"}</span>
+                            <Pencil className="h-3 w-3" />
                           </button>
                         )}
                       </div>
 
-                      {/* Delta vs approx */}
-                      {end && (
-                        <span className="text-xs text-muted-foreground">
-                          Δ{" "}
+                      {/* Delta indicator */}
+                      {deltaSeconds !== undefined && (
+                        <div className="flex items-center gap-1">
                           <span
-                            className={cn(deltaSeconds! >= 0 ? "text-amber-600" : "text-emerald-600", "font-medium")}
+                            className={cn(
+                              "text-xs font-medium",
+                              deltaSeconds > 0 ? "text-orange-600 dark:text-orange-400" : "text-green-600 dark:text-green-400",
+                            )}
                           >
-                            {deltaSeconds! === 0 ? "on time" : `${deltaSeconds! > 0 ? "+" : "-"}${deltaHuman}`}
+                            {deltaSeconds > 0 ? "▲" : "▼"} {deltaHuman}
                           </span>
-                        </span>
+                        </div>
                       )}
 
-                      {/* Total duration aligned to the end */}
-                      {typeof task.durationSeconds === "number" && (
-                        <span className="ml-auto text-xs text-muted-foreground">Total {diffLabel}</span>
+                      {/* Total duration */}
+                      {diffLabel && (
+                        <div className="text-xs text-muted-foreground">
+                          Total {diffLabel}
+                        </div>
                       )}
                     </div>
                   )}
@@ -163,22 +157,16 @@ export default function TaskList({
               </label>
             </div>
 
-            <div className="shrink-0 pt-1">
-              <Button
-                type="button"
-                variant="ghost"
-                size="icon"
-                className="h-5 w-5 text-neutral-500 hover:text-red-600"
-                aria-label="Delete task"
-                title="Delete task"
-                onClick={(e) => {
-                  e.stopPropagation()
-                  onDelete(task.id)
-                }}
-              >
-                <Trash2 className="h-3 w-3" />
-              </Button>
-            </div>
+            {/* Delete button */}
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={() => onDelete(task.id)}
+              className="opacity-0 group-hover:opacity-100 transition-opacity h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="sr-only">Delete task</span>
+            </Button>
           </li>
         )
       })}

@@ -78,7 +78,7 @@ export default function AddTaskForm({
 
   return (
     <form
-      className="rounded-xl border p-3 sm:p-4 shadow-sm space-y-4 bg-white"
+      className="rounded-xl border p-3 sm:p-4 shadow-sm space-y-4 bg-card"
       onSubmit={(e) => {
         e.preventDefault()
         if (!description.trim()) return
@@ -116,11 +116,11 @@ export default function AddTaskForm({
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {/* Start Time */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="start-hour" className="text-xs font-medium text-neutral-600">
+          <label htmlFor="start-hour" className="text-xs font-medium text-foreground">
             {"Start Time"}
           </label>
-          <div className="flex flex-wrap items-center gap-1 rounded-md border bg-white px-2 py-1.5">
-            <Clock className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
+          <div className="flex flex-wrap items-center gap-1 rounded-md border bg-background px-2 py-1.5">
+            <Clock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
             <div className="flex items-center gap-1">
                <Input
                 id="start-hour"
@@ -129,9 +129,9 @@ export default function AddTaskForm({
                 placeholder="hh"
                 value={sHour}
                  onChange={(e) => setSHour(onlyDigits2(e.target.value))}
-                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
+                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md bg-background border-0 focus-visible:ring-1"
               />
-              <span className="select-none text-xs text-neutral-500 px-0.5">:</span>
+              <span className="select-none text-xs text-muted-foreground px-0.5">:</span>
                <Input
                 id="start-minute"
                 type="text"
@@ -139,7 +139,7 @@ export default function AddTaskForm({
                 placeholder="mm"
                 value={sMinute}
                  onChange={(e) => setSMinute(onlyDigits2(e.target.value))}
-                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
+                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md bg-background border-0 focus-visible:ring-1"
               />
             </div>
             <ToggleGroup
@@ -151,14 +151,14 @@ export default function AddTaskForm({
               <ToggleGroupItem
                 value="AM"
                 aria-label="AM"
-                className="h-7 px-2 text-xs border rounded-l-md data-[state=on]:bg-neutral-900 data-[state=on]:text-white"
+                className="h-7 px-2 text-xs border rounded-l-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=off]:bg-background data-[state=off]:text-foreground"
               >
                 AM
               </ToggleGroupItem>
               <ToggleGroupItem
                 value="PM"
                 aria-label="PM"
-                className="h-7 px-2 text-xs border -ml-px rounded-r-md data-[state=on]:bg-neutral-900 data-[state=on]:text-white"
+                className="h-7 px-2 text-xs border -ml-px rounded-r-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=off]:bg-background data-[state=off]:text-foreground"
               >
                 PM
               </ToggleGroupItem>
@@ -168,11 +168,11 @@ export default function AddTaskForm({
 
         {/* End Time (Approx) */}
         <div className="flex flex-col gap-1">
-          <label htmlFor="end-hour" className="text-xs font-medium text-neutral-600">
+          <label htmlFor="end-hour" className="text-xs font-medium text-foreground">
             {"End Time"}
           </label>
-          <div className="flex flex-wrap items-center gap-1 rounded-md border bg-white px-2 py-1.5">
-            <Clock className="h-3.5 w-3.5 text-neutral-400" aria-hidden />
+          <div className="flex flex-wrap items-center gap-1 rounded-md border bg-background px-2 py-1.5">
+            <Clock className="h-3.5 w-3.5 text-muted-foreground" aria-hidden />
             <div className="flex items-center gap-1">
                <Input
                 id="end-hour"
@@ -181,9 +181,9 @@ export default function AddTaskForm({
                 placeholder="hh"
                 value={eHour}
                  onChange={(e) => setEHour(onlyDigits2(e.target.value))}
-                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
+                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md bg-background border-0 focus-visible:ring-1"
               />
-              <span className="select-none text-xs text-neutral-500 px-0.5">:</span>
+              <span className="select-none text-xs text-muted-foreground px-0.5">:</span>
                <Input
                 id="end-minute"
                 type="text"
@@ -191,7 +191,7 @@ export default function AddTaskForm({
                 placeholder="mm"
                 value={eMinute}
                  onChange={(e) => setEMinute(onlyDigits2(e.target.value))}
-                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md"
+                className="w-10 h-7 px-1.5 text-center text-[11px] rounded-md bg-background border-0 focus-visible:ring-1"
               />
             </div>
             <ToggleGroup
@@ -203,14 +203,14 @@ export default function AddTaskForm({
               <ToggleGroupItem
                 value="AM"
                 aria-label="AM"
-                className="h-7 px-2 text-xs border rounded-l-md data-[state=on]:bg-neutral-900 data-[state=on]:text-white"
+                className="h-7 px-2 text-xs border rounded-l-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=off]:bg-background data-[state=off]:text-foreground"
               >
                 AM
               </ToggleGroupItem>
               <ToggleGroupItem
                 value="PM"
                 aria-label="PM"
-                className="h-7 px-2 text-xs border -ml-px rounded-r-md data-[state=on]:bg-neutral-900 data-[state=on]:text-white"
+                className="h-7 px-2 text-xs border -ml-px rounded-r-md data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=off]:bg-background data-[state=off]:text-foreground"
               >
                 PM
               </ToggleGroupItem>
@@ -221,7 +221,7 @@ export default function AddTaskForm({
 
       {/* Task field */}
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="desc" className="text-xs font-medium text-neutral-600">
+        <label htmlFor="desc" className="text-xs font-medium text-foreground">
           {"Task"}
         </label>
         <Input
@@ -229,12 +229,12 @@ export default function AddTaskForm({
           placeholder="What will you do?"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
-          className="h-9 rounded-lg"
+          className="h-9 rounded-lg bg-background"
         />
       </div>
 
       <div className="flex items-center justify-end gap-2">
-        <Button type="button" variant="ghost" onClick={onCancel}>
+        <Button type="button" variant="outline" onClick={onCancel} className="text-foreground">
           {"Cancel"}
         </Button>
         <Button type="submit" disabled={!description.trim()}>

@@ -11,9 +11,6 @@
         "durationSeconds": 74260
       }
     ],
-    "2025-08-04": [],
-    "2025-08-05": [],
-    "2025-08-10": [],
     "2025-08-12": [
       {
         "id": "1754978030722-r0p3zuopv2t",
@@ -43,13 +40,32 @@
         "description": "NextJs Training x2 - 2hrs each",
         "completed": false
       }
-    ]
+    ],
+    "2025-08-25": []
   },
   "categoriesByDate": {
     "2025-08-09": {
       "water": false,
       "meat": true,
       "sleep": true,
+      "gym": false
+    },
+    "2025-08-26": {
+      "water": false,
+      "meat": false,
+      "sleep": false,
+      "gym": false
+    },
+    "2025-08-25": {
+      "water": false,
+      "meat": false,
+      "sleep": false,
+      "gym": false
+    },
+    "2025-08-30": {
+      "water": false,
+      "meat": false,
+      "sleep": false,
       "gym": false
     }
   }

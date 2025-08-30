@@ -37,26 +37,51 @@ export default function Page() {
     let cancelled = false
     async function load() {
       setIsLoading(true)
-      const tasksEntries = await Promise.all(
-        weekDates.map(async (d) => {
-          const iso = formatISODate(d)
-          const res = await fetch(`/api/tasks/${iso}`, { cache: 'no-store' })
-          const data = await res.json()
-          return [iso, (data.tasks || [])] as const
-        }),
-      )
-      const categoriesEntries = await Promise.all(
-        weekDates.map(async (d) => {
-          const iso = formatISODate(d)
-          const res = await fetch(`/api/categories/${iso}`, { cache: 'no-store' })
-          const data = await res.json()
-          return [iso, data.categories] as const
-        }),
-      )
-      if (!cancelled) {
-        setTasksByDate(Object.fromEntries(tasksEntries))
-        setCategoriesByDate(Object.fromEntries(categoriesEntries))
-        setIsLoading(false)
+      try {
+        const tasksEntries = await Promise.all(
+          weekDates.map(async (d) => {
+            const iso = formatISODate(d)
+            try {
+              const res = await fetch(`/api/tasks/${iso}`, { cache: 'no-store' })
+              if (!res.ok) {
+                console.error(`Failed to fetch tasks for ${iso}:`, res.status, res.statusText)
+                return [iso, []] as const
+              }
+              const data = await res.json()
+              return [iso, (data.tasks || [])] as const
+            } catch (error) {
+              console.error(`Error fetching tasks for ${iso}:`, error)
+              return [iso, []] as const
+            }
+          }),
+        )
+        const categoriesEntries = await Promise.all(
+          weekDates.map(async (d) => {
+            const iso = formatISODate(d)
+            try {
+              const res = await fetch(`/api/categories/${iso}`, { cache: 'no-store' })
+              if (!res.ok) {
+                console.error(`Failed to fetch categories for ${iso}:`, res.status, res.statusText)
+                return [iso, { water: false, meat: false, sleep: false, gym: false }] as const
+              }
+              const data = await res.json()
+              return [iso, data.categories] as const
+            } catch (error) {
+              console.error(`Error fetching categories for ${iso}:`, error)
+              return [iso, { water: false, meat: false, sleep: false, gym: false }] as const
+            }
+          }),
+        )
+        if (!cancelled) {
+          setTasksByDate(Object.fromEntries(tasksEntries))
+          setCategoriesByDate(Object.fromEntries(categoriesEntries))
+          setIsLoading(false)
+        }
+      } catch (error) {
+        console.error('Error loading data:', error)
+        if (!cancelled) {
+          setIsLoading(false)
+        }
       }
     }
     load()
@@ -232,7 +257,7 @@ export default function Page() {
         <section className="mx-auto max-w-6xl px-4 py-4">
           <Tabs value={view} onValueChange={(v) => setView(v as typeof view)} className="w-full">
             <div className="flex items-center justify-between mb-3">
-              <TabsList className="bg-neutral-50">
+              <TabsList className="bg-muted">
                 <TabsTrigger value="week">Week</TabsTrigger>
                 <TabsTrigger value="month">Month</TabsTrigger>
                 <TabsTrigger value="year">Year</TabsTrigger>
@@ -306,5 +331,3 @@ export default function Page() {
     </div>
   )
 }
-
-// Removed local mock seeding. Data now persists in data/state.json via API.

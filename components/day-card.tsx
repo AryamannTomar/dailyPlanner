@@ -95,20 +95,20 @@ export default function DayCard({
   }) => {
     return (
       <div
-        className="flex items-center gap-1.5 rounded-full border px-2 py-1 text-[11px] select-none"
+        className="flex items-center gap-1.5 rounded-full border px-2 py-1 text-[11px] select-none cursor-pointer hover:bg-muted/50 transition-colors"
         onClick={(e) => e.stopPropagation()}
       >
         <Checkbox
           checked={value}
           onCheckedChange={(checked) => onChange(Boolean(checked))}
           className={cn(
-            "h-3.5 w-3.5 border-neutral-300 data-[state=checked]:text-white",
+            "h-3.5 w-3.5 border-border data-[state=checked]:text-white",
             "data-[state=checked]:border-transparent",
-            colorChecked,
           )}
+          style={value ? { backgroundColor: colorChecked } : {}}
           aria-label={label}
         />
-        <span className="text-[11px] text-neutral-600">{label}</span>
+        <span className="text-[11px] text-foreground font-medium">{label}</span>
       </div>
     )
   }
@@ -119,7 +119,7 @@ export default function DayCard({
         className={cn(
           "transition-shadow duration-300 rounded-2xl border hover:shadow-md",
           open ? "shadow-lg" : "shadow-sm",
-          isToday ? "border-emerald-200" : "border-neutral-200",
+          isToday ? "border-emerald-200 dark:border-emerald-700" : "border-border",
         )}
       >
         <div
@@ -140,7 +140,9 @@ export default function DayCard({
             <div
               className={cn(
                 "h-10 w-10 rounded-xl flex items-center justify-center text-sm font-semibold",
-                isToday ? "bg-emerald-50 text-emerald-700" : "bg-neutral-50 text-neutral-700",
+                isToday 
+                  ? "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-300" 
+                  : "bg-muted text-muted-foreground",
               )}
             >
               {getDayLabel(date).slice(0, 2)}
@@ -158,7 +160,7 @@ export default function DayCard({
             <div className="flex items-center gap-3">
               <ProgressCircle percent={percent} size={40} strokeWidth={6} />
               <ChevronDown
-                className={cn("h-5 w-5 transition-transform duration-300", open ? "rotate-180" : "rotate-0")}
+                className={cn("h-5 w-5 transition-transform duration-300 text-muted-foreground", open ? "rotate-180" : "rotate-0")}
               />
             </div>
           </div>
@@ -166,25 +168,25 @@ export default function DayCard({
           <div className="flex flex-wrap items-center gap-2">
             <CategoryPill
               label="Water"
-              colorChecked="data-[state=checked]:bg-sky-500"
+              colorChecked="rgb(14, 165, 233)"
               value={categories.water}
               onChange={(v) => onToggleCategory("water", v)}
             />
             <CategoryPill
               label="Meat"
-              colorChecked="data-[state=checked]:bg-pink-500"
+              colorChecked="rgb(236, 72, 153)"
               value={categories.meat}
               onChange={(v) => onToggleCategory("meat", v)}
             />
             <CategoryPill
               label="Sleep"
-              colorChecked="data-[state=checked]:bg-violet-400"
+              colorChecked="rgb(167, 139, 250)"
               value={categories.sleep}
               onChange={(v) => onToggleCategory("sleep", v)}
             />
             <CategoryPill
               label="Gym"
-              colorChecked="data-[state=checked]:bg-orange-500"
+              colorChecked="rgb(249, 115, 22)"
               value={categories.gym}
               onChange={(v) => onToggleCategory("gym", v)}
             />
@@ -204,14 +206,8 @@ export default function DayCard({
         >
           <div ref={contentRef}>
             <div className="px-4 pb-4">
-              <TaskList
-                tasks={tasks}
-                onToggleComplete={(id, completed) => onToggleComplete(id, completed)}
-                onUpdateEndTime={(id, newTime) => onUpdateEndTime(id, newTime)}
-                onDelete={(id) => onDeleteTask(id)}
-              />
-
-              <div className="mt-3">
+              {/* Add Task button at the top */}
+              <div className="mb-3">
                 {showAdd ? (
                   <AddTaskForm
                     onCancel={() => setShowAdd(false)}
@@ -236,6 +232,14 @@ export default function DayCard({
                   </Button>
                 )}
               </div>
+
+              {/* Task list below */}
+              <TaskList
+                tasks={tasks}
+                onToggleComplete={(id, completed) => onToggleComplete(id, completed)}
+                onUpdateEndTime={(id, newTime) => onUpdateEndTime(id, newTime)}
+                onDelete={(id) => onDeleteTask(id)}
+              />
             </div>
           </div>
         </div>
