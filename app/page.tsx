@@ -28,18 +28,32 @@ export default function Page() {
   const [tasksByDate, setTasksByDate] = useState<TasksByDate>({})
   const [categoriesByDate, setCategoriesByDate] = useState<CategoriesByDate>({})
   const [isLoading, setIsLoading] = useState<boolean>(true)
+  const [isInitialized, setIsInitialized] = useState<boolean>(false)
 
   // Month/Year filter
   const [mode, setMode] = useState<FilterMode>("tasks")
 
-  // Load tasks and categories for the current week from API (JSON store)
+  // Load all data once when component mounts
   useEffect(() => {
     let cancelled = false
-    async function load() {
+    async function loadAllData() {
       setIsLoading(true)
       try {
+        // Load data for a wider range (e.g., 3 months around current date)
+        const startDate = new Date()
+        startDate.setMonth(startDate.getMonth() - 1)
+        const endDate = new Date()
+        endDate.setMonth(endDate.getMonth() + 1)
+        
+        const allDates: Date[] = []
+        const current = new Date(startDate)
+        while (current <= endDate) {
+          allDates.push(new Date(current))
+          current.setDate(current.getDate() + 1)
+        }
+
         const tasksEntries = await Promise.all(
-          weekDates.map(async (d) => {
+          allDates.map(async (d) => {
             const iso = formatISODate(d)
             try {
               const res = await fetch(`/api/tasks/${iso}`, { cache: 'no-store' })
@@ -56,7 +70,7 @@ export default function Page() {
           }),
         )
         const categoriesEntries = await Promise.all(
-          weekDates.map(async (d) => {
+          allDates.map(async (d) => {
             const iso = formatISODate(d)
             try {
               const res = await fetch(`/api/categories/${iso}`, { cache: 'no-store' })
@@ -76,19 +90,21 @@ export default function Page() {
           setTasksByDate(Object.fromEntries(tasksEntries))
           setCategoriesByDate(Object.fromEntries(categoriesEntries))
           setIsLoading(false)
+          setIsInitialized(true)
         }
       } catch (error) {
         console.error('Error loading data:', error)
         if (!cancelled) {
           setIsLoading(false)
+          setIsInitialized(true)
         }
       }
     }
-    load()
+    loadAllData()
     return () => {
       cancelled = true
     }
-  }, [weekStart])
+  }, []) // Empty dependency array - only run once on mount
 
   const handleToggleComplete = async (dateISO: string, taskId: string, completed: boolean) => {
     const res = await fetch(`/api/tasks/${dateISO}`, {
@@ -188,7 +204,7 @@ export default function Page() {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      {isLoading && (
+      {isLoading && !isInitialized && (
         <div className="fixed inset-0 z-50 bg-background/60 backdrop-blur-sm flex items-center justify-center">
           <div className="flex items-center gap-3 rounded-lg border bg-background px-4 py-3 shadow-sm">
             <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />

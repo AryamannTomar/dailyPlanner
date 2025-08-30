@@ -1,16 +1,6 @@
 {
   "tasksByDate": {
-    "2025-08-09": [
-      {
-        "id": "1754725029557-la11ezymztf",
-        "startTime": "13:06",
-        "approxEndTime": "15:00",
-        "description": "IKEA buy and finalize table+lamp+clock",
-        "completed": true,
-        "actualEndTime": "09:43:40",
-        "durationSeconds": 74260
-      }
-    ],
+    "2025-08-09": [],
     "2025-08-12": [
       {
         "id": "1754978030722-r0p3zuopv2t",
@@ -46,8 +36,8 @@
   "categoriesByDate": {
     "2025-08-09": {
       "water": false,
-      "meat": true,
-      "sleep": true,
+      "meat": false,
+      "sleep": false,
       "gym": false
     },
     "2025-08-26": {

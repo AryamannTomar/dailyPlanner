@@ -82,7 +82,7 @@ export default function DayCard({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open])
 
-  const CategoryPill = ({
+    const CategoryPill = ({
     label,
     colorChecked,
     value,
@@ -96,7 +96,10 @@ export default function DayCard({
     return (
       <div
         className="flex items-center gap-1.5 rounded-full border px-2 py-1 text-[11px] select-none cursor-pointer hover:bg-muted/50 transition-colors"
-        onClick={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation()
+          onChange(!value)
+        }}
       >
         <Checkbox
           checked={value}
@@ -125,18 +128,21 @@ export default function DayCard({
         <div
           role="button"
           tabIndex={0}
-          onClick={() => setOpen((v) => !v)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault()
-              setOpen((v) => !v)
-            }
-          }}
           className="w-full flex flex-col gap-3 p-4 text-left"
           aria-expanded={open}
           aria-controls={`${dateISO}-content`}
         >
-          <div className="w-full flex items-center gap-3">
+          <div 
+            className="w-full flex items-center gap-3 cursor-pointer"
+            onClick={() => setOpen((v) => !v)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault()
+                setOpen((v) => !v)
+              }
+            }}
+            tabIndex={0}
+          >
             <div
               className={cn(
                 "h-10 w-10 rounded-xl flex items-center justify-center text-sm font-semibold",
@@ -218,11 +224,12 @@ export default function DayCard({
                     }}
                   />
                 ) : (
-                  <Button
+                                    <Button
                     variant="outline"
                     size="sm"
-                    className="w-full justify-center gap-2 bg-transparent"
-                    onClick={() => {
+                    className="w-full justify-center gap-2 bg-transparent cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation()
                       setShowAdd(true)
                       setTimeout(() => measure(), 0)
                     }}
