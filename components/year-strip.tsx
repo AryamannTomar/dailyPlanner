@@ -2,6 +2,7 @@
 
 import { addDays, formatISODate, getStartOfWeek, isSameDay, startOfMonth } from "@/lib/date-utils"
 import type { FilterMode, TasksByDate, CategoriesByDate } from "@/lib/types"
+import type { WeekStartDay } from "@/lib/settings-utils"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { ChevronLeft, ChevronRight } from "lucide-react"
@@ -18,6 +19,7 @@ type Props = {
   selectedDate?: Date
   onChangeYear: (year: number) => void
   onSelectDate: (date: Date) => void
+  weekStartsOn?: WeekStartDay
 }
 
 export default function YearStrip({
@@ -29,6 +31,7 @@ export default function YearStrip({
   selectedDate,
   onChangeYear,
   onSelectDate,
+  weekStartsOn = 1,
 }: Props) {
   const CELL = 16
   const GAP = 3
@@ -59,11 +62,11 @@ export default function YearStrip({
 
   const jan1 = useMemo(() => new Date(year, 0, 1), [year])
   const dec31 = useMemo(() => new Date(year, 11, 31), [year])
-  const gridStart = useMemo(() => getStartOfWeek(jan1), [jan1])
+  const gridStart = useMemo(() => getStartOfWeek(jan1, weekStartsOn), [jan1, weekStartsOn])
   const gridEnd = useMemo(() => {
-    const endWeekStart = getStartOfWeek(dec31)
+    const endWeekStart = getStartOfWeek(dec31, weekStartsOn)
     return addDays(endWeekStart, 6)
-  }, [dec31])
+  }, [dec31, weekStartsOn])
 
   const weeks: Date[][] = useMemo(() => {
     const wk: Date[][] = []
@@ -112,7 +115,7 @@ export default function YearStrip({
     const labels: { monthIndex: number; label: string; colIndex: number }[] = []
     for (let m = 0; m < 12; m++) {
       const mStart = startOfMonth(new Date(year, m, 1))
-      const mStartWeek = getStartOfWeek(mStart)
+      const mStartWeek = getStartOfWeek(mStart, weekStartsOn)
       const colIndex = Math.floor((mStartWeek.getTime() - gridStart.getTime()) / (1000 * 60 * 60 * 24 * 7))
       labels.push({
         monthIndex: m,
@@ -121,7 +124,7 @@ export default function YearStrip({
       })
     }
     return labels
-  }, [gridStart, year])
+  }, [gridStart, year, weekStartsOn])
 
   const totalWidth = useMemo(() => {
     const cols = weeks.length

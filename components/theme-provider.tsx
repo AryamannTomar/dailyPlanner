@@ -5,6 +5,15 @@ import {
   ThemeProvider as NextThemesProvider,
   type ThemeProviderProps,
 } from 'next-themes'
+import { initializeColorTheme } from '@/lib/theme-utils'
+
+// Component to initialize color theme on mount
+function ColorThemeInitializer() {
+  React.useEffect(() => {
+    initializeColorTheme()
+  }, [])
+  return null
+}
 
 export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
   return (
@@ -16,6 +25,7 @@ export function ThemeProvider({ children, ...props }: ThemeProviderProps) {
       themes={['light', 'dark']}
       {...props}
     >
+      <ColorThemeInitializer />
       {children}
     </NextThemesProvider>
   )

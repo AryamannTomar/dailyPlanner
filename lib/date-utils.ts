@@ -1,15 +1,36 @@
-export function getStartOfWeek(date: Date): Date {
-  // Monday as start of week
+import type { WeekStartDay } from "@/lib/settings-utils"
+
+export function getStartOfWeek(date: Date, weekStartsOn: WeekStartDay = 1): Date {
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const day = d.getDay() // 0 (Sun) - 6 (Sat)
-  const diff = (day === 0 ? -6 : 1) - day // if Sunday, go back 6 days; else to Monday
-  d.setDate(d.getDate() + diff)
+
+  if (weekStartsOn === 0) {
+    // Sunday as start of week
+    d.setDate(d.getDate() - day)
+  } else {
+    // Monday as start of week
+    const diff = (day === 0 ? -6 : 1) - day // if Sunday, go back 6 days; else to Monday
+    d.setDate(d.getDate() + diff)
+  }
+
   d.setHours(0, 0, 0, 0)
   return d
 }
 
 export function getWeekDates(weekStart: Date): Date[] {
   return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+}
+
+export function getWeekDays(date: Date, weekStartsOn: WeekStartDay = 1): Date[] {
+  const weekStart = getStartOfWeek(date, weekStartsOn)
+  return Array.from({ length: 7 }, (_, i) => addDays(weekStart, i))
+}
+
+export function getWeekdayLabels(weekStartsOn: WeekStartDay = 1): string[] {
+  if (weekStartsOn === 0) {
+    return ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+  }
+  return ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
 }
 
 export function addDays(date: Date, days: number): Date {
