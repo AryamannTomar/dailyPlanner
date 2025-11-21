@@ -1,0 +1,7 @@
+export { QuickTasksWidget } from './quick-tasks-widget'
+export { HabitStreakWidget } from './habit-streak-widget'
+export { WeekProgressWidget } from './week-progress-widget'
+export { PomodoroWidget } from './pomodoro-widget'
+export { GoalsWidget } from './goals-widget'
+export { CalendarWidget } from './calendar-widget'
+export { NotesWidget } from './notes-widget'

@@ -6,14 +6,18 @@ import {
   endOfMonth,
   formatISODate,
   getStartOfWeek,
+  getWeekdayLabels,
   isSameDay,
   startOfMonth,
   toLabelDate,
 } from "@/lib/date-utils"
-import type { FilterMode, Task, TasksByDate, CategoriesByDate } from "@/lib/types"
+import type { FilterMode, Task, TasksByDate, CategoriesByDate, HabitEntry } from "@/lib/types"
+import type { WeekStartDay } from "@/lib/settings-utils"
+import { getHabitCompletionPercent, isHabitCompleted } from "@/lib/types"
+import { getMultiDayTasksForDate, getTaskProgress, formatDateRange } from "@/lib/multiday-utils"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { ChevronLeft, ChevronRight, CheckCircle2 } from "lucide-react"
+import { ChevronLeft, ChevronRight, CheckCircle2, CalendarRange } from "lucide-react"
 import { useMemo, useState } from "react"
 import ProgressCircle from "@/components/progress-circle"
 import { cn } from "@/lib/utils"
@@ -30,6 +34,7 @@ export default function CalendarHeatmap({
   onSelectDate,
   onChangeMonth,
   onOpenWeek,
+  weekStartsOn = 1,
 }: {
   monthDate: Date
   tasksByDate: TasksByDate
@@ -40,6 +45,7 @@ export default function CalendarHeatmap({
   onSelectDate: (date: Date) => void
   onChangeMonth: (date: Date) => void
   onOpenWeek?: (date: Date) => void
+  weekStartsOn?: WeekStartDay
 }) {
   const CELL = 16
   const GAP = 3
@@ -48,11 +54,11 @@ export default function CalendarHeatmap({
   const monthStart = useMemo(() => startOfMonth(monthDate), [monthDate])
   const monthEnd = useMemo(() => endOfMonth(monthDate), [monthDate])
 
-  const gridStart = useMemo(() => getStartOfWeek(monthStart), [monthStart])
+  const gridStart = useMemo(() => getStartOfWeek(monthStart, weekStartsOn), [monthStart, weekStartsOn])
   const gridEnd = useMemo(() => {
-    const endWeekStart = getStartOfWeek(monthEnd)
+    const endWeekStart = getStartOfWeek(monthEnd, weekStartsOn)
     return addDays(endWeekStart, 6)
-  }, [monthEnd])
+  }, [monthEnd, weekStartsOn])
 
   const days: Date[] = useMemo(() => {
     const d: Date[] = []
@@ -72,7 +78,7 @@ export default function CalendarHeatmap({
     return w
   }, [days])
 
-  const weekdays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+  const weekdays = useMemo(() => getWeekdayLabels(weekStartsOn), [weekStartsOn])
 
   const baseColorRGB = (mode: FilterMode) => {
     switch (mode) {
@@ -95,30 +101,62 @@ export default function CalendarHeatmap({
   const getStats = (date: Date) => {
     const iso = formatISODate(date)
     const tasks = tasksByDate[iso] || []
-    const cats = categoriesByDate[iso] || { water: false, meat: false, sleep: false, gym: false }
+    const cats = categoriesByDate[iso] || {}
+
+    // Get multi-day tasks that span to this date (from previous days)
+    const multiDayTasks = getMultiDayTasksForDate(tasksByDate, iso)
+    const hasMultiDayTasks = multiDayTasks.length > 0
+
     if (filterMode === "tasks") {
-      const completed = tasks.filter((t) => t.completed).length
-      const total = tasks.length
+      // Combine regular tasks with multi-day tasks for this date
+      const allTasks = [
+        ...tasks,
+        ...multiDayTasks.map(({ task }) => task)
+      ]
+      const completed = allTasks.filter((t) => t.completed).length
+      const total = allTasks.length
       const pct = total === 0 ? 0 : Math.round((completed / total) * 100)
-      return { pct, completed, total, tasks }
+      return { pct, completed, total, tasks: allTasks, hasMultiDayTasks, multiDayTasks }
     }
+
     if (filterMode === "all") {
-      const checks = [cats.water, cats.meat, cats.sleep, cats.gym]
-      const doneAll = checks.every(Boolean)
-      const count = checks.filter(Boolean).length
-      const pct = doneAll ? 100 : 0
-      return { pct, completed: count, total: 4, tasks }
+      // Calculate average completion percentage across all habits
+      const habitKeys = Object.keys(cats)
+      if (habitKeys.length === 0) {
+        return { pct: 0, completed: 0, total: 0, tasks }
+      }
+
+      let totalPercent = 0
+      let completedCount = 0
+
+      habitKeys.forEach((key) => {
+        const entry = cats[key]
+        const percent = getHabitCompletionPercent(entry)
+        totalPercent += percent
+        if (isHabitCompleted(entry)) {
+          completedCount++
+        }
+      })
+
+      const avgPct = Math.round(totalPercent / habitKeys.length)
+      return { pct: avgPct, completed: completedCount, total: habitKeys.length, tasks }
     }
-    const v =
-      filterMode === "water"
-        ? cats.water
-        : filterMode === "meat"
-          ? cats.meat
-          : filterMode === "sleep"
-            ? cats.sleep
-            : cats.gym
-    const pct = v ? 100 : 0
-    return { pct, completed: v ? 1 : 0, total: 1, tasks }
+
+    // Individual habit filter
+    const entry = cats[filterMode]
+    if (!entry) {
+      return { pct: 0, completed: 0, total: 1, tasks }
+    }
+
+    const pct = getHabitCompletionPercent(entry)
+    const completed = isHabitCompleted(entry) ? 1 : 0
+
+    // For goal-based habits, show value/goal in completed/total
+    if (typeof entry === 'object' && 'value' in entry && 'goal' in entry) {
+      return { pct, completed: entry.value, total: entry.goal, tasks }
+    }
+
+    return { pct, completed, total: 1, tasks }
   }
 
   const opacityFor = (pct: number) => {
@@ -140,21 +178,13 @@ export default function CalendarHeatmap({
     const neutralBg = "#f3f4f6"
     const neutralBr = "#e5e7eb"
 
-    if (filterMode === "tasks") {
-      const op = opacityFor(pct)
-      if (pct === 0) return { bg: neutralBg, br: neutralBr }
-      return {
-        bg: `rgba(${base.r}, ${base.g}, ${base.b}, ${op})`,
-        br: `rgba(${base.r}, ${base.g}, ${base.b}, ${Math.max(op - 0.2, 0.25)})`,
-      }
-    } else {
-      if (pct === 100) {
-        return {
-          bg: `rgba(${base.r}, ${base.g}, ${base.b}, 1)`,
-          br: `rgba(${base.r}, ${base.g}, ${base.b}, 0.95)`,
-        }
-      }
-      return { bg: neutralBg, br: neutralBr }
+    // Use gradient opacity for tasks and all habit modes (to support goal-based progress)
+    const op = opacityFor(pct)
+    if (pct === 0) return { bg: neutralBg, br: neutralBr }
+
+    return {
+      bg: `rgba(${base.r}, ${base.g}, ${base.b}, ${op})`,
+      br: `rgba(${base.r}, ${base.g}, ${base.b}, ${Math.max(op - 0.2, 0.25)})`,
     }
   }
 
@@ -185,28 +215,26 @@ export default function CalendarHeatmap({
           </div>
 
           <div className="flex items-center gap-3">
-            {filterMode === "tasks" && (
-              <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
-                <span>{"Less"}</span>
-                <div className="flex items-center gap-1">
-                  {[0, 25, 50, 75, 100].map((v) => {
-                    const op = opacityFor(v)
-                    const bg = v === 0 ? "#f3f4f6" : `rgba(${base.r}, ${base.g}, ${base.b}, ${op})`
-                    const br = v === 0 ? "#e5e7eb" : `rgba(${base.r}, ${base.g}, ${base.b}, ${Math.max(op - 0.2, 0.2)})`
-                    return (
-                      <div
-                        key={v}
-                        aria-hidden
-                        className="h-4 w-4 rounded-[3px] border"
-                        style={{ backgroundColor: bg, borderColor: br }}
-                        title={`${v}%`}
-                      />
-                    )
-                  })}
-                </div>
-                <span>{"More"}</span>
+            <div className="hidden sm:flex items-center gap-2 text-xs text-muted-foreground">
+              <span>{"Less"}</span>
+              <div className="flex items-center gap-1">
+                {[0, 25, 50, 75, 100].map((v) => {
+                  const op = opacityFor(v)
+                  const bg = v === 0 ? "#f3f4f6" : `rgba(${base.r}, ${base.g}, ${base.b}, ${op})`
+                  const br = v === 0 ? "#e5e7eb" : `rgba(${base.r}, ${base.g}, ${base.b}, ${Math.max(op - 0.2, 0.2)})`
+                  return (
+                    <div
+                      key={v}
+                      aria-hidden
+                      className="h-4 w-4 rounded-[3px] border"
+                      style={{ backgroundColor: bg, borderColor: br }}
+                      title={`${v}%`}
+                    />
+                  )
+                })}
               </div>
-            )}
+              <span>{"More"}</span>
+            </div>
 
             <div className="flex items-center gap-2">
               <div className="hidden sm:block text-xs text-muted-foreground">View</div>
@@ -242,7 +270,8 @@ export default function CalendarHeatmap({
                 <div key={wIdx} className="flex flex-col" style={{ gap: GAP }}>
                   {week.map((d) => {
                     const inMonth = d >= monthStart && d <= monthEnd
-                    const { pct, completed, total } = getStats(d)
+                    const stats = getStats(d)
+                    const { pct, completed, total, hasMultiDayTasks } = stats
                     const isToday = isSameDay(d, today)
                     const isActive = isSameDay(d, activeDate)
                     const { bg, br } = computeCellColors(pct)
@@ -255,18 +284,19 @@ export default function CalendarHeatmap({
                           setActiveDate(d)
                           onSelectDate(d)
                         }}
-                        aria-label={`${toLabelDate(d)} — ${completed}/${total} (${modeLabel(filterMode)})`}
-                        title={`${toLabelDate(d)} — ${completed}/${total} (${modeLabel(filterMode)})`}
+                        aria-label={`${toLabelDate(d)} — ${completed}/${total} (${modeLabel(filterMode)})${hasMultiDayTasks ? ' (includes multi-day tasks)' : ''}`}
+                        title={`${toLabelDate(d)} — ${completed}/${total} (${modeLabel(filterMode)})${hasMultiDayTasks ? ' (includes multi-day tasks)' : ''}`}
                         className={cn(
                           "rounded-[3px] border outline-offset-2 focus:outline-none focus:ring-2 transition-transform hover:scale-[1.06]",
                           "focus:ring-offset-0",
                           isActive && !isToday && "ring-1 ring-neutral-400",
+                          hasMultiDayTasks && filterMode === "tasks" && "ring-1 ring-sky-400",
                         )}
                         style={{
                           width: CELL,
                           height: CELL,
                           backgroundColor: inMonth ? bg : "#fafafa",
-                          borderColor: inMonth ? br : "#f0f0f0",
+                          borderColor: inMonth ? (hasMultiDayTasks && filterMode === "tasks" ? "rgba(14, 165, 233, 0.5)" : br) : "#f0f0f0",
                           boxShadow: isToday ? "0 0 0 2px rgba(16,185,129,0.9) inset" : undefined,
                           opacity: inMonth ? 1 : 0.5,
                           cursor: "pointer",
@@ -297,31 +327,49 @@ export default function CalendarHeatmap({
                   <div className="text-sm text-muted-foreground border rounded-lg p-3">{"No tasks for this day."}</div>
                 ) : (
                   <ul className="space-y-2 max-h-48 overflow-auto pr-1">
-                    {(getStats(activeDate).tasks as Task[]).map((t: Task) => {
-                      const times = t.completed
-                        ? `${t.startTime} → ${t.actualEndTime ?? ""}`
-                        : `${t.startTime} → ${t.approxEndTime}`
-                      const delta =
-                        t.completed && typeof t.durationSeconds === "number"
-                          ? ` • Δ ${formatDurationHuman(t.durationSeconds)}`
-                          : ""
-                      return (
-                        <li
-                          key={t.id}
-                          className="flex items-center gap-2 rounded-lg border p-2 text-sm shadow-sm bg-white"
-                        >
-                          <CheckCircle2
-                            className={cn("h-4 w-4", t.completed ? "text-emerald-600" : "text-neutral-300")}
-                            aria-hidden
-                          />
-                          <span className="w-28 shrink-0 text-xs text-muted-foreground">{times}</span>
-                          <span className={cn(t.completed ? "line-through text-muted-foreground" : "")}>
-                            {t.description}
-                          </span>
-                          {delta && <span className="ml-auto text-[11px] text-muted-foreground">{delta}</span>}
-                        </li>
-                      )
-                    })}
+                    {(() => {
+                      const activeStats = getStats(activeDate)
+                      const activeDateISO = formatISODate(activeDate)
+                      return (activeStats.tasks as Task[]).map((t: Task) => {
+                        const times = t.completed
+                          ? `${t.startTime} → ${t.actualEndTime ?? ""}`
+                          : `${t.startTime} → ${t.approxEndTime}`
+                        const delta =
+                          t.completed && typeof t.durationSeconds === "number"
+                            ? ` Δ ${formatDurationHuman(t.durationSeconds)}`
+                            : ""
+
+                        // Check if this is a multi-day task
+                        const isMultiDay = t.endDate && t.endDate > activeDateISO
+                        const multiDayProgress = isMultiDay ? getTaskProgress(t, activeDateISO, activeDateISO) : null
+
+                        return (
+                          <li
+                            key={t.id}
+                            className={cn(
+                              "flex items-center gap-2 rounded-lg border p-2 text-sm shadow-sm bg-white",
+                              isMultiDay && "border-sky-200 dark:border-sky-800"
+                            )}
+                          >
+                            <CheckCircle2
+                              className={cn("h-4 w-4", t.completed ? "text-emerald-600" : "text-neutral-300")}
+                              aria-hidden
+                            />
+                            <span className="w-28 shrink-0 text-xs text-muted-foreground">{times}</span>
+                            <span className={cn("flex-1", t.completed ? "line-through text-muted-foreground" : "")}>
+                              {t.description}
+                            </span>
+                            {isMultiDay && multiDayProgress && (
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-medium bg-sky-100 dark:bg-sky-900/30 text-sky-600 dark:text-sky-400">
+                                <CalendarRange className="h-2.5 w-2.5" />
+                                {multiDayProgress.currentDay}/{multiDayProgress.totalDays}
+                              </span>
+                            )}
+                            {delta && <span className="text-[11px] text-muted-foreground">{delta}</span>}
+                          </li>
+                        )
+                      })
+                    })()}
                   </ul>
                 )}
 

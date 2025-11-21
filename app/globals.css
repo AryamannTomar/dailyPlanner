@@ -86,6 +86,186 @@
   --category-gym: rgb(249, 115, 22);
 }
 
+/* Ocean Blue Theme */
+.theme-ocean-blue {
+  --primary: oklch(0.55 0.18 230);
+  --primary-foreground: oklch(0.99 0.005 230);
+  --secondary: oklch(0.96 0.02 230);
+  --secondary-foreground: oklch(0.35 0.1 230);
+  --accent: oklch(0.75 0.15 230);
+  --accent-foreground: oklch(0.25 0.1 230);
+  --ring: oklch(0.55 0.18 230);
+  --sidebar-primary: oklch(0.55 0.18 230);
+  --sidebar-primary-foreground: oklch(0.99 0.005 230);
+  --chart-1: oklch(0.55 0.18 230);
+  --chart-2: oklch(0.65 0.15 200);
+  --chart-3: oklch(0.75 0.12 180);
+  --chart-4: oklch(0.6 0.2 250);
+  --chart-5: oklch(0.7 0.18 210);
+}
+
+.theme-ocean-blue.dark,
+.dark.theme-ocean-blue {
+  --primary: oklch(0.7 0.15 230);
+  --primary-foreground: oklch(0.1 0.02 230);
+  --secondary: oklch(0.22 0.04 230);
+  --secondary-foreground: oklch(0.9 0.02 230);
+  --accent: oklch(0.5 0.12 230);
+  --accent-foreground: oklch(0.95 0.01 230);
+  --ring: oklch(0.6 0.15 230);
+  --sidebar-primary: oklch(0.65 0.15 230);
+  --sidebar-primary-foreground: oklch(0.98 0.005 230);
+  --chart-1: oklch(0.65 0.18 230);
+  --chart-2: oklch(0.7 0.15 200);
+  --chart-3: oklch(0.75 0.12 180);
+  --chart-4: oklch(0.6 0.2 250);
+  --chart-5: oklch(0.7 0.18 210);
+}
+
+/* Forest Green Theme */
+.theme-forest-green {
+  --primary: oklch(0.52 0.16 145);
+  --primary-foreground: oklch(0.99 0.01 145);
+  --secondary: oklch(0.96 0.03 145);
+  --secondary-foreground: oklch(0.3 0.1 145);
+  --accent: oklch(0.75 0.18 145);
+  --accent-foreground: oklch(0.25 0.08 145);
+  --ring: oklch(0.52 0.16 145);
+  --sidebar-primary: oklch(0.52 0.16 145);
+  --sidebar-primary-foreground: oklch(0.99 0.01 145);
+  --chart-1: oklch(0.52 0.16 145);
+  --chart-2: oklch(0.6 0.14 160);
+  --chart-3: oklch(0.7 0.12 130);
+  --chart-4: oklch(0.55 0.18 170);
+  --chart-5: oklch(0.65 0.15 140);
+}
+
+.theme-forest-green.dark,
+.dark.theme-forest-green {
+  --primary: oklch(0.7 0.16 145);
+  --primary-foreground: oklch(0.1 0.02 145);
+  --secondary: oklch(0.2 0.04 145);
+  --secondary-foreground: oklch(0.9 0.02 145);
+  --accent: oklch(0.55 0.14 145);
+  --accent-foreground: oklch(0.95 0.01 145);
+  --ring: oklch(0.6 0.14 145);
+  --sidebar-primary: oklch(0.65 0.15 145);
+  --sidebar-primary-foreground: oklch(0.98 0.01 145);
+  --chart-1: oklch(0.65 0.16 145);
+  --chart-2: oklch(0.7 0.14 160);
+  --chart-3: oklch(0.75 0.12 130);
+  --chart-4: oklch(0.6 0.18 170);
+  --chart-5: oklch(0.7 0.15 140);
+}
+
+/* Sunset Orange Theme */
+.theme-sunset-orange {
+  --primary: oklch(0.55 0.2 45);
+  --primary-foreground: oklch(0.99 0.01 45);
+  --secondary: oklch(0.96 0.03 60);
+  --secondary-foreground: oklch(0.35 0.12 45);
+  --accent: oklch(0.75 0.18 55);
+  --accent-foreground: oklch(0.25 0.1 45);
+  --ring: oklch(0.55 0.2 45);
+  --sidebar-primary: oklch(0.55 0.2 45);
+  --sidebar-primary-foreground: oklch(0.99 0.01 45);
+  --chart-1: oklch(0.55 0.2 45);
+  --chart-2: oklch(0.65 0.18 30);
+  --chart-3: oklch(0.75 0.15 60);
+  --chart-4: oklch(0.6 0.22 20);
+  --chart-5: oklch(0.7 0.19 50);
+}
+
+.theme-sunset-orange.dark,
+.dark.theme-sunset-orange {
+  --primary: oklch(0.72 0.18 45);
+  --primary-foreground: oklch(0.1 0.02 45);
+  --secondary: oklch(0.22 0.05 45);
+  --secondary-foreground: oklch(0.9 0.02 45);
+  --accent: oklch(0.55 0.15 55);
+  --accent-foreground: oklch(0.95 0.01 45);
+  --ring: oklch(0.62 0.16 45);
+  --sidebar-primary: oklch(0.68 0.17 45);
+  --sidebar-primary-foreground: oklch(0.98 0.01 45);
+  --chart-1: oklch(0.68 0.2 45);
+  --chart-2: oklch(0.72 0.18 30);
+  --chart-3: oklch(0.78 0.15 60);
+  --chart-4: oklch(0.65 0.22 20);
+  --chart-5: oklch(0.73 0.19 50);
+}
+
+/* Royal Purple Theme */
+.theme-royal-purple {
+  --primary: oklch(0.55 0.22 290);
+  --primary-foreground: oklch(0.99 0.01 290);
+  --secondary: oklch(0.96 0.03 290);
+  --secondary-foreground: oklch(0.35 0.12 290);
+  --accent: oklch(0.72 0.16 290);
+  --accent-foreground: oklch(0.25 0.1 290);
+  --ring: oklch(0.55 0.22 290);
+  --sidebar-primary: oklch(0.55 0.22 290);
+  --sidebar-primary-foreground: oklch(0.99 0.01 290);
+  --chart-1: oklch(0.55 0.22 290);
+  --chart-2: oklch(0.65 0.18 270);
+  --chart-3: oklch(0.7 0.15 310);
+  --chart-4: oklch(0.6 0.2 250);
+  --chart-5: oklch(0.68 0.19 280);
+}
+
+.theme-royal-purple.dark,
+.dark.theme-royal-purple {
+  --primary: oklch(0.72 0.18 290);
+  --primary-foreground: oklch(0.1 0.02 290);
+  --secondary: oklch(0.2 0.05 290);
+  --secondary-foreground: oklch(0.9 0.02 290);
+  --accent: oklch(0.5 0.14 290);
+  --accent-foreground: oklch(0.95 0.01 290);
+  --ring: oklch(0.6 0.16 290);
+  --sidebar-primary: oklch(0.68 0.17 290);
+  --sidebar-primary-foreground: oklch(0.98 0.01 290);
+  --chart-1: oklch(0.68 0.2 290);
+  --chart-2: oklch(0.72 0.18 270);
+  --chart-3: oklch(0.75 0.15 310);
+  --chart-4: oklch(0.65 0.2 250);
+  --chart-5: oklch(0.7 0.19 280);
+}
+
+/* Rose Pink Theme */
+.theme-rose-pink {
+  --primary: oklch(0.55 0.22 350);
+  --primary-foreground: oklch(0.99 0.01 350);
+  --secondary: oklch(0.96 0.03 350);
+  --secondary-foreground: oklch(0.35 0.12 350);
+  --accent: oklch(0.75 0.18 350);
+  --accent-foreground: oklch(0.25 0.1 350);
+  --ring: oklch(0.55 0.22 350);
+  --sidebar-primary: oklch(0.55 0.22 350);
+  --sidebar-primary-foreground: oklch(0.99 0.01 350);
+  --chart-1: oklch(0.55 0.22 350);
+  --chart-2: oklch(0.65 0.18 330);
+  --chart-3: oklch(0.7 0.15 10);
+  --chart-4: oklch(0.6 0.2 320);
+  --chart-5: oklch(0.68 0.19 340);
+}
+
+.theme-rose-pink.dark,
+.dark.theme-rose-pink {
+  --primary: oklch(0.72 0.18 350);
+  --primary-foreground: oklch(0.1 0.02 350);
+  --secondary: oklch(0.2 0.05 350);
+  --secondary-foreground: oklch(0.9 0.02 350);
+  --accent: oklch(0.52 0.15 350);
+  --accent-foreground: oklch(0.95 0.01 350);
+  --ring: oklch(0.6 0.16 350);
+  --sidebar-primary: oklch(0.68 0.17 350);
+  --sidebar-primary-foreground: oklch(0.98 0.01 350);
+  --chart-1: oklch(0.68 0.2 350);
+  --chart-2: oklch(0.72 0.18 330);
+  --chart-3: oklch(0.75 0.15 10);
+  --chart-4: oklch(0.65 0.2 320);
+  --chart-5: oklch(0.7 0.19 340);
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -153,4 +333,362 @@ input[type="time"].no-native-time-picker::-webkit-calendar-picker-indicator {
 input[type="time"].no-native-time-picker::-webkit-clear-button,
 input[type="time"].no-native-time-picker::-webkit-inner-spin-button {
   display: none !important;
+}
+
+/* Streak animations */
+@keyframes flicker {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  25% {
+    opacity: 0.85;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.02);
+  }
+  75% {
+    opacity: 0.9;
+    transform: scale(0.99);
+  }
+}
+
+@keyframes confetti {
+  0% {
+    transform: translateY(0) rotateZ(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100px) rotateZ(720deg);
+    opacity: 0;
+  }
+}
+
+@keyframes sparkle {
+  0%, 100% {
+    opacity: 0;
+    transform: scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes celebrate {
+  0% {
+    transform: scale(1);
+  }
+  10% {
+    transform: scale(1.1);
+  }
+  20% {
+    transform: scale(1);
+  }
+  30% {
+    transform: scale(1.05);
+  }
+  40% {
+    transform: scale(1);
+  }
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 5px currentColor;
+  }
+  50% {
+    box-shadow: 0 0 20px currentColor, 0 0 30px currentColor;
+  }
+}
+
+@keyframes streak-fire {
+  0%, 100% {
+    filter: brightness(1);
+  }
+  50% {
+    filter: brightness(1.3);
+  }
+}
+
+.animate-flicker {
+  animation: flicker 1.5s ease-in-out infinite;
+}
+
+.animate-confetti {
+  animation: confetti 2s ease-out forwards;
+}
+
+.animate-sparkle {
+  animation: sparkle 1s ease-in-out infinite;
+}
+
+.animate-celebrate {
+  animation: celebrate 0.5s ease-in-out;
+}
+
+.animate-glow-pulse {
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.animate-streak-fire {
+  animation: streak-fire 1s ease-in-out infinite;
+}
+
+/* Confetti particles */
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.confetti-piece {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  animation: confetti-fall 3s ease-out forwards;
+}
+
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(-10px) rotateZ(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotateZ(720deg);
+    opacity: 0;
+  }
+}
+
+/* Print styles */
+@media print {
+  /* Reset and base styles */
+  * {
+    print-color-adjust: exact !important;
+    -webkit-print-color-adjust: exact !important;
+  }
+
+  html, body {
+    height: auto !important;
+    overflow: visible !important;
+    background: white !important;
+    color: black !important;
+  }
+
+  body {
+    font-size: 11pt !important;
+    line-height: 1.4 !important;
+  }
+
+  /* Hide non-printable elements */
+  .no-print,
+  header:not(.print-header),
+  footer:not(.print-footer),
+  nav,
+  .sticky,
+  [data-slot="dialog-overlay"],
+  [data-slot="dialog-content"]:not(.print-dialog-content),
+  .confetti-container,
+  button:not(.print-button),
+  [role="dialog"]:not(.print-dialog),
+  .animate-flicker,
+  .animate-confetti,
+  .animate-sparkle,
+  .animate-celebrate,
+  .animate-glow-pulse,
+  .animate-streak-fire {
+    display: none !important;
+  }
+
+  /* Page setup */
+  @page {
+    size: letter;
+    margin: 0.5in;
+  }
+
+  @page :first {
+    margin-top: 0.5in;
+  }
+
+  /* Page break controls */
+  .page-break-before {
+    page-break-before: always !important;
+    break-before: page !important;
+  }
+
+  .page-break-after {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .avoid-page-break {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Typography for print */
+  h1 {
+    font-size: 18pt !important;
+    font-weight: bold !important;
+  }
+
+  h2 {
+    font-size: 14pt !important;
+    font-weight: bold !important;
+  }
+
+  h3 {
+    font-size: 12pt !important;
+    font-weight: 600 !important;
+  }
+
+  h4 {
+    font-size: 11pt !important;
+    font-weight: 600 !important;
+  }
+
+  p, li, td, th {
+    font-size: 10pt !important;
+  }
+
+  /* Optimize colors for black & white printing */
+  .print-view {
+    background: white !important;
+    color: black !important;
+  }
+
+  .print-view * {
+    color: black !important;
+    border-color: #000 !important;
+  }
+
+  .print-view .text-gray-500,
+  .print-view .text-gray-600,
+  .print-view .text-muted-foreground {
+    color: #555 !important;
+  }
+
+  /* Priority badges - use patterns for B&W */
+  .print-view [class*="bg-red"] {
+    background: #f0f0f0 !important;
+    border: 1px solid #000 !important;
+  }
+
+  .print-view [class*="bg-yellow"] {
+    background: #e5e5e5 !important;
+    border: 1px solid #000 !important;
+  }
+
+  .print-view [class*="bg-green"] {
+    background: #d5d5d5 !important;
+    border: 1px solid #000 !important;
+  }
+
+  /* Checkbox styling for print */
+  .print-view .border-black {
+    border: 2px solid #000 !important;
+  }
+
+  .print-view .bg-gray-300 {
+    background: #ccc !important;
+  }
+
+  /* Table styling */
+  .print-view table {
+    border-collapse: collapse !important;
+    width: 100% !important;
+  }
+
+  .print-view th,
+  .print-view td {
+    padding: 4pt 6pt !important;
+    border-bottom: 0.5pt solid #ccc !important;
+  }
+
+  .print-view th {
+    font-weight: bold !important;
+    background: #f0f0f0 !important;
+  }
+
+  /* Links - show URL */
+  .print-view a[href]:after {
+    content: " (" attr(href) ")";
+    font-size: 8pt;
+    color: #555;
+  }
+
+  /* Grid layout adjustments */
+  .print-view .grid-cols-2 {
+    display: grid !important;
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .print-view .grid-cols-7 {
+    display: grid !important;
+    grid-template-columns: repeat(7, 1fr) !important;
+  }
+
+  /* Spacing adjustments for print */
+  .print-view .space-y-6 > * + * {
+    margin-top: 12pt !important;
+  }
+
+  .print-view .space-y-4 > * + * {
+    margin-top: 8pt !important;
+  }
+
+  .print-view .space-y-2 > * + * {
+    margin-top: 4pt !important;
+  }
+
+  /* Notes section lines */
+  .print-view .min-h-32 {
+    min-height: 2in !important;
+  }
+
+  /* Header and footer */
+  .print-header {
+    display: block !important;
+    margin-bottom: 12pt !important;
+    padding-bottom: 8pt !important;
+    border-bottom: 2pt solid #000 !important;
+  }
+
+  .print-footer {
+    display: block !important;
+    margin-top: 12pt !important;
+    padding-top: 8pt !important;
+    border-top: 0.5pt solid #ccc !important;
+    text-align: center !important;
+    font-size: 8pt !important;
+    color: #666 !important;
+  }
+
+  /* Calendar grid for monthly view */
+  .print-view .min-h-16 {
+    min-height: 0.6in !important;
+    border: 0.5pt solid #ccc !important;
+  }
+
+  /* Ensure completed task styling */
+  .print-view .line-through {
+    text-decoration: line-through !important;
+    color: #888 !important;
+  }
+
+  /* Remove shadows and unnecessary styling */
+  .print-view [class*="shadow"] {
+    box-shadow: none !important;
+  }
+
+  .print-view [class*="rounded"] {
+    border-radius: 0 !important;
+  }
 }
